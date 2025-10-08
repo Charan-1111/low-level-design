@@ -69,5 +69,16 @@ func main() {
 	for w := 1; w <= 3; w++ {
 		go worker(w, jobs, results)
 	}
+
+	// Send Jobs
+	for j := 1; j <= numJobs; j++ {
+		jobs <- j
+	}
+	close(jobs)
+
+	// Collect results
+	for a := 1; a <= numJobs; a++ {
+		<-results
+	}
 }
 ```
