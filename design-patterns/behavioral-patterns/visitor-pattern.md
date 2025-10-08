@@ -20,4 +20,95 @@
 	1. The client creates an object structure of elements.
 	2. The client creates one or more concrete visitors containing specific operations.
 		Eg :- Calculating area, serializing, printing.
-	3. 
+	3. The client "applies" a visitor to all elements by calling ***accept (visitor)***; internally, each element invokes the corresponding ***visit()*** method on the visitor, possing itself for double-dispatch.
+
+- ## Pros
+	- Adds new operations easily - We can introduce new behaviour ( new visitors ) without touching the element classes.
+	- Separation of concerns - Business logic ( visitors ) is kept separate from the object structure ( elements ).
+	- Open/Closed Principle ( for operations ) - Elements remain closed for modifications, while operations can be extended freely.
+	- Good for complex object structures - Works well when we need to run multiple different operations on the same hierarchy of elements.
+	- Centralized logic - Operations that would otherwise be scattered across many classes are collected in one place.
+
+- ## Cons
+	- Hard to add new element types - If we add a new element class, we must modify every existing visitor -> breaks open/closed principle for elements.
+	- Increased Complexity - Requires double dispatch ( element.Accept(visitor) + visitor.Visit(element)), which can feel unnatural in some language.
+	- Tight Coupling - Elements must expose themselves to visitors via Accept() -> introduces dependency between visitors and elements.
+	- Less intutive design - Not straight forward for developers unfamiliar with the pattern, can feel like over engineering for simple cases.
+	- Maintenance Overhead - As the number of visitors and element types grows, keeping them in sync becomes cumbersum.
+
+- ## Sample implementation in Golang
+
+```go
+// Let's say we have shapes ( Circle, Rectangle ) and want to add new operations like Area and Perimeter
+// Without modifying the shape classes
+
+package main
+
+import "fmt"
+
+// Visitor interface
+type Visitor interface {
+	VisitCircle(*Circle)
+	VisitRectangle(*Rectangle)
+}
+
+// Element Interface
+type Shape interface {
+	Accept(Visitor)
+}
+
+// Concrete Elements
+type Circle struct {
+	radius float64
+}
+
+func (c *Circle) Accept(v Visitor) {
+	v.VisitCircle(c)
+}
+
+type Rectangle struct {
+	width, height float64
+}
+
+func (r *Rectangle) Accept(v Visitor) {
+	v.VisitRectangle(r)
+}
+
+// Concrete Visitor 1 :- Area Calculator
+type AreaVisitor struct{}
+
+func (a *AreaVisitor) VisitCircle(c *Circle) {
+	fmt.Printf("Area of Circle : %.2f\n", 3.14*c.radius*c.radius)
+}
+
+func (a *AreaVisitor) VisitRectangle(r *Rectangle) {
+	fmt.Printf("Area of Rectangle : %.2f\n", r.width*r.height)
+}
+
+// Concrete Visitor 2 :- Perimeter Calculator
+type PerimeterVisitor struct{}
+
+func (p *PerimeterVisitor) VisitCircle(c *Circle) {
+	fmt.Printf("Perimeter of the Circle : %.2f\n", 2*3.14*c.radius)
+}
+
+func (p *PerimeterVisitor) VisitRectangle(r *Rectangle) {
+	fmt.Printf("Perimeter of the Rectangle : %.2f\n", 2*(r.width + r.height))
+}
+
+// Client
+func main() {
+	shapes := []Shape{
+		&Circle{radius: 5},
+		&Rectangle{width: 4, height: 5},
+	}
+
+	areaVisitor := &AreaVisitor{}
+	perimeterVisitor := &PerimeterVisitor{}
+
+	for _, shape := range shapes {
+		shape.Accept(areaVisitor)
+		shape.Accept(perimeterVisitor)
+	}
+}
+```
