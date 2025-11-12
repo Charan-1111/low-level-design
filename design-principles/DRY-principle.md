@@ -34,43 +34,43 @@
 	- Can slow development if applied prematurely to one-off scripts.
 	
 - ## Sample implementation in golang
-- **Breaking DRY Principle**
-```go
-package main
-
-import "fmt"
-
-func areaCircle(radius float64) float64 {
-    return 3.14159 * radius * radius
-}
-
-func printCircleArea(radius float64) {
-    area := 3.14159 * radius * radius
-    fmt.Println("Area of the circle is : ", area)
-}
-
-func main() {
-    fmt.Println(areaCircle(5))
-    printCircleArea(5)
-}
-```
-- **Applying DRY Principle**
-```go
-package main
-
-import "fmt"
-
-const pi = 3.14159 // Centralized constant
-
-func areaCircle(radius float64) float64 {
-    return 3.14159 * radius * radius
-}
-
-func printCircleArea(radius float64) {
-    fmt.Println("Area of the circle is : ", areaCircle(radius))
-}
-
-func main() {
-    printCircleArea(5)
-}
-```
+	- **Breaking DRY Principle**
+	```go
+	package main
+	
+	import "fmt"
+	
+	func areaCircle(radius float64) float64 {
+	    return 3.14159 * radius * radius
+	}
+	
+	func printCircleArea(radius float64) {
+	    area := 3.14159 * radius * radius
+	    fmt.Println("Area of the circle is : ", area)
+	}
+	
+	func main() {
+	    fmt.Println(areaCircle(5))
+	    printCircleArea(5)
+	}
+	```
+	- **Applying DRY Principle**
+	```go
+	package main
+	
+	import "fmt"
+	
+	const pi = 3.14159 // Centralized constant
+	
+	func areaCircle(radius float64) float64 {
+	    return 3.14159 * radius * radius
+	}
+	
+	func printCircleArea(radius float64) {
+	    fmt.Println("Area of the circle is : ", areaCircle(radius))
+	}
+	
+	func main() {
+	    printCircleArea(5)
+	}
+	```
