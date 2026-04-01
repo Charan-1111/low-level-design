@@ -111,3 +111,5 @@ func main() {
 	}
 }
 ```
+
+- To understand even better, please refer [this example](https://github.com/Charan-1111/low-level-design/blob/main/design-patterns/examples/Repository-pattern.md)
